@@ -32,16 +32,17 @@ When invoked to set up an eval, produce a complete, validated `eval/` in the use
 
 2. **Choose location & runtime.** Default `<project>/eval/`. Run the TS CLIs with `tsx` (add as a devDep if missing); if the project compiles to `dist/`, point the npm scripts there instead.
 
-3. **Copy the engine verbatim** from this skill's `lib/`: `engine.ts`, `runner.ts`, `personas.ts` → `eval/` (trim personas to the audience if useful).
+3. **Copy the engine verbatim** from this skill's `lib/`: `engine.ts`, `runner.ts`, `personas.ts`, `engine.test.ts` → `eval/` (trim personas to the audience if useful). `engine.test.ts` is project-agnostic — it guards the scoring / validation / report-render logic you might later tweak, so ship it with every scaffold.
 
 4. **Copy `templates/eval/` → `eval/` and fill the seams:**
    - `config.ts` — `scoredFields`, `personaIds`, `langs`, `groupSize`.
    - `labels.ts` — replace `allowedLabels` with the **real** enumeration from the agent's runtime code path; spot-check values against what the agent actually emits.
    - `scenarios.ts` — author scenarios from the business case (`{id, expected, factSheet, problem}`); cover each label ≥1×; `expected` uses real labels.
-   - `agent-turn.ts` — wire to the agent (Variant A in-process / Variant B subprocess); map its classification → `classified`, optional fields → `surfaced`; stop at the classification step.
+   - `agent-turn.ts` — wire to the agent (Variant A in-process / Variant B subprocess); map its classification → `classified`, optional fields → `surfaced`; stop at the classification step. If Variant A parses a streamEvents/tool envelope in-process, factor the **pure** parsing into its own module (e.g. `eval/event-parse.ts`) so it's unit-testable without booting the agent — a silently-broken parser makes every dialog falsely `deferred`.
    - `cli/*` and `README.md` — copy as-is; fix import paths only if the layout differs. The enforced-driving CLIs (`drive-turn`, `finalize`, `scenario-state`, `assemble`) are how runs are driven — see "Driving without fabrication."
    - `customer-reply.ts` — fill in only if you'll use Path A (an API-backed customer); otherwise delete it.
-   - Add npm scripts: `eval:build-corpus`, `eval:validate`, `eval:build-slice`, `eval:aggregate` (each `tsx eval/cli/<x>.ts`).
+   - Add npm scripts: `eval:build-corpus`, `eval:validate`, `eval:build-slice`, `eval:aggregate` (each `tsx eval/cli/<x>.ts`), plus `eval:test` (`node --import tsx --test "eval/*.test.ts"`), and `eval:typecheck` (`tsc --noEmit -p eval/tsconfig.json`) when `eval/` falls outside the project's `tsconfig`.
+   - **Tests** — `engine.test.ts` ships with the engine (step 3). Add one small test per *logic* seam you edit: the adapter's pure envelope parser (`event-parse.test.ts`) and the label-space loader (`labels.test.ts`). `scenarios.ts` / `config.ts` are data — `eval:validate` covers them. All `eval/*.test.ts` run under `eval:test`; they make `eval/` safe to change later.
    - **Ground-truth review gate — do this before generating the corpus.** The `expected` labels in `scenarios.ts` are *the answer key the agent is graded against*; you drafted them from your reading of the agent, and `validate` only checks they are *real* labels, not that they are the **right** label for each scenario. Show the user the drafted `{scenario → expected}` list and get a quick confirm/correction. A wrong key measures "does the agent agree with you," not correctness — never skip this on the ambiguous cases (the clear-home ones are usually safe).
 
 5. **Generate the corpus** (only after the ground-truth review passes). For each scenario × persona × lang, write a persona-voiced opening (in that language) from the scenario's `problem`/`factSheet` — never name a label. Parallelize with subagents; write `eval/reports/_work/openings/<persona>.json` = `[{scenarioId, lang, opening}]`. Then `npm run eval:build-corpus`.
@@ -51,6 +52,7 @@ When invoked to set up an eval, produce a complete, validated `eval/` in the use
 **Generated layout:**
 ```
 eval/ engine.ts runner.ts personas.ts config.ts scenarios.ts labels.ts agent-turn.ts customer-reply.ts corpus.json README.md
+      engine.test.ts  (+ project seam tests you add: event-parse.test.ts, labels.test.ts)   # run by eval:test
       cli/ build-corpus.ts validate.ts build-slice.ts aggregate.ts        # corpus + scoring
            drive-turn.ts finalize.ts scenario-state.ts assemble.ts        # enforced driving (Path B)
            run-turn.ts                                                     # optional ad-hoc single-turn helper
@@ -140,7 +142,7 @@ Reject and re-dispatch (it resumes) anything that fails. **Never trust a `12 ok`
 This skill ships a project-agnostic engine you copy in. Pure TypeScript, no deps, verified by its own test:
 
 - `lib/personas.ts` — the 6 personas (drop-in; customize freely).
-- `lib/engine.ts` — `aggregate(results, {fields?})` scores any set of scored fields → markdown+json (per-field accuracy, a per-expected-value breakdown, per-persona/-language/-scenario breakdowns, dialog metrics, miss list); `validateCorpus(corpus, cfg)` checks corpus invariants via injected predicates. Covered by `lib/engine.test.ts` (incl. table-rendering integrity). Markdown cells escape `|`, and the per-expected-value breakdown replaces the old wide matrix so long values stay readable.
+- `lib/engine.ts` — `aggregate(results, {fields?})` scores any set of scored fields → markdown+json (per-field accuracy, a per-expected-value breakdown, per-persona/-language/-scenario breakdowns, dialog metrics, miss list); `validateCorpus(corpus, cfg)` checks corpus invariants via injected predicates. Covered by `lib/engine.test.ts` (incl. table-rendering integrity), which the scaffolder also copies into each project's `eval/` so the engine stays guarded after local tweaks. Markdown cells escape `|`, and the per-expected-value breakdown replaces the old wide matrix so long values stay readable.
 - `lib/runner.ts` — `runScenario({ entry, factSheet, agentTurn, customerReply, maxTurns })`: the dialog loop, both effects injected (Path A drives this directly).
 - `cli/drive-turn.ts`, `cli/finalize.ts`, `cli/scenario-state.ts`, `cli/assemble.ts` — the enforced-driving toolkit (Path B): a transcript-writing turn-runner, the completion gate, the resume helper, and group assembly. The driver subagent uses these and never authors results itself.
 - `customer-reply.ts` — optional Path-A customer backed by an LLM API (for fully-automated, subagent-free runs).
