@@ -1,0 +1,26 @@
+{
+  "name": "korsicheg-marketplace",
+  "owner": {
+    "name": "korsicheg"
+  },
+  "metadata": {
+    "description": "Personal Claude Code plugin marketplace by korsicheg",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "persona-dialog-eval",
+      "source": "./plugins/persona-dialog-eval",
+      "description": "Persona-dialog evaluation for conversational agents: hold a case (with fixed ground-truth labels) constant and vary only the speaker — persona and language — then have an LLM play that speaker in a real dialog with the actual agent and score its emitted decision (category / team / intent / severity) per persona and language. Scaffolds a complete eval/ (reusable scoring engine + dialog runner + enforced anti-fabrication driving CLIs), generates a committed corpus, and produces an accuracy report with a per-expected-value breakdown and a miss list.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Alexandros Korsakov"
+      },
+      "repository": "https://github.com/korsicheg/claude-marketplace",
+      "license": "MIT",
+      "keywords": ["eval", "evaluation", "persona", "classification", "routing", "intent", "severity", "chat-agent", "robustness", "testing", "llm-as-judge"],
+      "category": "testing",
+      "tags": ["eval", "persona", "testing", "chat-agent"]
+    }
+  ]
+}

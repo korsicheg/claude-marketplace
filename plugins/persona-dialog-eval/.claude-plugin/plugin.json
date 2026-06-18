@@ -1,0 +1,9 @@
+{
+  "name": "persona-dialog-eval",
+  "version": "0.1.0",
+  "description": "Persona-dialog evaluation for conversational agents. Hold a case (with fixed ground-truth labels) constant and vary only the speaker — persona (rude, nervous, arrogant, technical, clueless, non-technical) and language — then have an LLM play that speaker in a real dialog with the actual agent and score its emitted decision (category / team / intent / severity) per persona and language. Scaffolds a complete eval/ (reusable scoring engine + dialog runner + enforced anti-fabrication driving CLIs), generates a committed corpus, and produces an accuracy report with a per-expected-value breakdown and a miss list.",
+  "author": {
+    "name": "Alexandros Korsakov"
+  },
+  "keywords": ["eval", "evaluation", "persona", "classification", "routing", "intent", "severity", "chat-agent", "robustness", "testing", "llm-as-judge"]
+}
