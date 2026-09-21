@@ -11,16 +11,65 @@
     {
       "name": "persona-dialog-eval",
       "source": "./plugins/persona-dialog-eval",
-      "description": "Persona-dialog evaluation for conversational agents: hold a case (with fixed ground-truth labels) constant and vary only the speaker — persona and language — then have an LLM play that speaker in a real dialog with the actual agent and score its emitted decision (category / team / intent / severity) per persona and language. Scaffolds a complete eval/ (reusable scoring engine + dialog runner + enforced anti-fabrication driving CLIs + guarding unit tests), generates a committed corpus, and produces an accuracy report with a per-expected-value breakdown and a miss list.",
+      "description": "Persona-dialog evaluation for conversational agents: hold a case (with fixed ground-truth labels) constant and vary only the speaker \u2014 persona and language \u2014 then have an LLM play that speaker in a real dialog with the actual agent and score its emitted decision (category / team / intent / severity) per persona and language. Scaffolds a complete eval/ (reusable scoring engine + dialog runner + enforced anti-fabrication driving CLIs + guarding unit tests), generates a committed corpus, and produces an accuracy report with a per-expected-value breakdown and a miss list.",
       "version": "0.2.0",
       "author": {
         "name": "Alexandros Korsakov"
       },
       "repository": "https://github.com/korsicheg/claude-marketplace",
       "license": "MIT",
-      "keywords": ["eval", "evaluation", "persona", "classification", "routing", "intent", "severity", "chat-agent", "robustness", "testing", "llm-as-judge"],
+      "keywords": [
+        "eval",
+        "evaluation",
+        "persona",
+        "classification",
+        "routing",
+        "intent",
+        "severity",
+        "chat-agent",
+        "robustness",
+        "testing",
+        "llm-as-judge"
+      ],
       "category": "testing",
-      "tags": ["eval", "persona", "testing", "chat-agent"]
+      "tags": [
+        "eval",
+        "persona",
+        "testing",
+        "chat-agent"
+      ]
+    },
+    {
+      "name": "clean-code",
+      "source": "./plugins/clean-code",
+      "description": "Robert C. Martin's Clean Code as five routing knowledge-base skills, one per language family, that cover any language between them. Each is a chaptered reference \u2014 rules, worked examples, a cheatsheet, a glossary and a pattern catalogue \u2014 and each description routes to the right sibling, so the model loads the one skill that fits the file it is editing. clean-code-java carries the original book (Java examples, the refactoring case studies, and the 66-item smells-and-heuristics catalogue); clean-code-typescript, clean-code-javascript and clean-code-python carry the community adaptations, each worked in its own idiom \u2014 TS types and Failable results, JS closures and promises, Python ABCs, dataclasses and mypy. clean-code-universal is the family's shared core: a language-agnostic distillation cross-checked against all four, built on a three-tier spine that separates rules holding wherever you can name a thing and run a check (Tier 1) from rules binding only where a construct exists \u2014 a parameter list, a type system, an exception, a test runner, a thread (Tier 2). It carries the languages the book never covers: Go, Rust, C#, C++, Kotlin, Ruby, PHP, Swift, Scala, and the declarative ones \u2014 YAML (Kubernetes, Helm, CI pipelines), Terraform/HCL, SQL, Bash, Dockerfile \u2014 with a translation table stating, per rule, what it means where there are no functions, no classes and no unit tests, and which rules genuinely do not apply. Sources and licences differ per skill: see NOTICE.md.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Alexandros Korsakov"
+      },
+      "repository": "https://github.com/korsicheg/claude-marketplace",
+      "license": "SEE NOTICE.md",
+      "keywords": [
+        "clean-code",
+        "refactoring",
+        "code-review",
+        "naming",
+        "solid",
+        "testing",
+        "code-quality",
+        "yaml",
+        "terraform",
+        "sql",
+        "kubernetes",
+        "polyglot"
+      ],
+      "category": "development",
+      "tags": [
+        "clean-code",
+        "code-quality",
+        "refactoring",
+        "code-review"
+      ]
     }
   ]
 }
