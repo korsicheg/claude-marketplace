@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# SessionStart hook: put the clean-code gateway at the top of the context
+# window, so the skill family is considered before any code gets written.
+#
+# Being listed among the available skills is not enough on its own -- the
+# gateway is what names the language-to-skill dispatch. See PLUGIN_CHANGELOG.
+#
+# The filename is extensionless on purpose: Claude Code's Windows command
+# detection prepends "bash" to anything containing ".sh".
+#
+# Re-runs on clear and compact as well as startup, because compaction would
+# otherwise drop the injected text mid-session.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+GATEWAY_FILE="${SCRIPT_DIR}/clean-code-gateway.md"
+
+# Single-pass parameter substitution. Backslash first, or it re-escapes the
+# escapes it just added.
+escape_for_json() {
+    local text="$1"
+    text="${text//\\/\\\\}"
+    text="${text//\"/\\\"}"
+    text="${text//$'\n'/\\n}"
+    text="${text//$'\r'/\\r}"
+    text="${text//$'\t'/\\t}"
+    printf '%s' "$text"
+}
+
+emit_session_context() {
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$1"
+}
+
+# An unreadable gateway is reported into the session rather than swallowed: a
+# silent exit is indistinguishable from the hook never having been installed.
+if ! gateway_text=$(cat "${GATEWAY_FILE}" 2>&1); then
+    emit_session_context "$(escape_for_json \
+        "clean-code plugin: could not read ${GATEWAY_FILE} -- ${gateway_text}. Invoke the matching clean-code skill manually before writing or reviewing code.")"
+    exit 0
+fi
+
+emit_session_context "<EXTREMELY_IMPORTANT>\n$(escape_for_json "$gateway_text")\n</EXTREMELY_IMPORTANT>"

@@ -9,6 +9,46 @@ or capability, **patch** = content fix or doc change with no new surface.
 
 Sources and licensing for the shipped content are recorded in [NOTICE.md](NOTICE.md).
 
+## [1.1.0] — 2026-09-22
+
+### Added
+
+- **A `SessionStart` gateway hook** (`hooks/`), so the family fires without being asked for.
+  Five well-described skills turned out not to be enough: in practice the model reads past
+  them, because nothing in a session names *when* to load one. The gateway injects a short
+  rule at the top of each context window — a language-to-skill dispatch table, the
+  before-not-after ordering, and a red-flags table rebutting the specific rationalisations
+  used to skip ("it's a one-line change", "I'm matching the surrounding style", "I'm
+  reviewing, not writing"). Mechanism copied from the `superpowers` plugin, which solves the
+  same problem the same way.
+  - `hooks/clean-code-gateway.md` — the rule, 360 words. **Edit this to change behaviour;**
+    the script only escapes and emits it.
+  - `hooks/session-start` — reads the gateway, JSON-escapes it, emits it as
+    `hookSpecificOutput.additionalContext`. An unreadable gateway is reported *into the
+    session* with the failing operation and `cat`'s own message, never swallowed — a silent
+    exit is indistinguishable from the hook not being installed.
+  - `hooks/hooks.json` — one registration, matcher `startup|clear|compact`. Fires once per
+    context window rather than per turn, so the recurring cost is ~2.2 kB of context and no
+    extra model calls. `clear` and `compact` are in the matcher because compaction would
+    otherwise drop the injected text mid-session.
+
+### Notes
+
+- **Two deliberate departures from the `superpowers` original.** Its gateway asserts
+  "questions are tasks, check for skills"; copied literally that fires clean-code on
+  codebase questions and trace reading, so this one carries an explicit **Scope** section
+  exempting them — a rule that cries wolf gets tuned out. And a **Precedence** section
+  gives the project's own `CLAUDE.md` and the user priority over the skill, requiring any
+  set-aside rule to be named, since house conventions legitimately contradict the book.
+- **No Windows polyglot wrapper.** `superpowers` ships a `cmd.exe`/bash polyglot for native
+  Windows without Git Bash; `"shell": "bash"` covers macOS, Linux, WSL and Git Bash, and the
+  remaining case degrades to no injection rather than an error. Left out as speculative
+  until someone reports needing it.
+- **Verification.** `bash -n` clean; happy path and missing-gateway path both exercised; the
+  escaped payload round-trips byte-identical to the source (`diff -q`), so backticks, quotes
+  and the markdown table pipes survive. `shellcheck` was **not** run — not installed in the
+  authoring environment.
+
 ## [1.0.0] — 2026-09-21
 
 First release. Five skills, 82 files, ~16k lines.
