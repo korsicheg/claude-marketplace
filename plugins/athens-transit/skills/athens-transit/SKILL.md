@@ -20,7 +20,7 @@ oasa go "<destination>" [--line <line>] [--from <where>] [--format telegram|voic
 - **A bus or trolley line** (`--line 040`, `A1`, `11`; Latin or Greek letters, leading zeros optional): that line with **OASA's live predictions**. It picks the direction, compares up to three nearby stops by when the user would arrive, and says where to get off.
 - **No line, or a metro/tram line** (`M1`, `M3`, `T6`): Google's transit journeys (metro, tram, suburban rail, buses), every bus or trolley ride switched to OASA's live time. Metro and tram times are the timetable: no live metro data exists.
 - `--from` defaults to `here`, the latest location the user shared on Telegram (live, or under 30 min old). Both ends also take a saved place (`home`, `work`), `lat,lon`, or anything Google Maps finds.
-- The default output is a finished Telegram message in Markdown, with the Google Maps links Google's terms require and links to follow the bus live. Send it as is: `oasa go … | tg send`.
+- The default output is a finished message in Markdown, with the Google Maps links Google's terms require and links to follow the bus live. Send it as is where the user wrote: `oasa go … | tg send` (on Slack, `| slack send`). Shared locations and leave-now alerts are Telegram only.
 - `--format voice` gives one or two spoken sentences; `--format json` gives every detail (stops, codes, all buses).
 
 ## Flow
