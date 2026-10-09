@@ -1,0 +1,342 @@
+{
+ "routes": [
+  {
+   "legs": [
+    {
+     "steps": [
+      {
+       "distanceMeters": 5,
+       "staticDuration": "4s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 61,
+       "staticDuration": "53s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 73,
+       "staticDuration": "76s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 29,
+       "staticDuration": "24s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 3355,
+       "staticDuration": "437s",
+       "transitDetails": {
+        "stopDetails": {
+         "arrivalStop": {
+          "name": "Attiki",
+          "location": {
+           "latLng": {
+            "latitude": 37.999323,
+            "longitude": 23.722495
+           }
+          }
+         },
+         "arrivalTime": "2026-10-09T07:10:10Z",
+         "departureStop": {
+          "name": "Syntagma",
+          "location": {
+           "latLng": {
+            "latitude": 37.975096,
+            "longitude": 23.735739
+           }
+          }
+         },
+         "departureTime": "2026-10-09T07:02:53Z"
+        },
+        "localizedValues": {
+         "arrivalTime": {
+          "time": {
+           "text": "10:10 AM"
+          },
+          "timeZone": "Europe/Athens"
+         },
+         "departureTime": {
+          "time": {
+           "text": "10:02 AM"
+          },
+          "timeZone": "Europe/Athens"
+         }
+        },
+        "headsign": "Anthoupoli",
+        "transitLine": {
+         "agencies": [
+          {
+           "name": "Urban Rail Transport S.A.",
+           "uri": "https://www.stasy.gr/"
+          }
+         ],
+         "name": "Γραμμη 2",
+         "color": "#d92626",
+         "nameShort": "M2",
+         "textColor": "#000000",
+         "vehicle": {
+          "name": {
+           "text": "Subway"
+          },
+          "type": "SUBWAY",
+          "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+         }
+        },
+        "stopCount": 5
+       },
+       "travelMode": "TRANSIT"
+      },
+      {
+       "distanceMeters": 12713,
+       "staticDuration": "1620s",
+       "transitDetails": {
+        "stopDetails": {
+         "arrivalStop": {
+          "name": "Kifissia",
+          "location": {
+           "latLng": {
+            "latitude": 38.073682,
+            "longitude": 23.808308
+           }
+          }
+         },
+         "arrivalTime": "2026-10-09T07:41:00Z",
+         "departureStop": {
+          "name": "Attiki",
+          "location": {
+           "latLng": {
+            "latitude": 37.999511,
+            "longitude": 23.722835000000003
+           }
+          }
+         },
+         "departureTime": "2026-10-09T07:14:00Z"
+        },
+        "localizedValues": {
+         "arrivalTime": {
+          "time": {
+           "text": "10:41 AM"
+          },
+          "timeZone": "Europe/Athens"
+         },
+         "departureTime": {
+          "time": {
+           "text": "10:14 AM"
+          },
+          "timeZone": "Europe/Athens"
+         }
+        },
+        "headsign": "Kifissia",
+        "transitLine": {
+         "agencies": [
+          {
+           "name": "Urban Rail Transport S.A.",
+           "uri": "https://www.stasy.gr/"
+          }
+         ],
+         "name": "Γραμμη 1",
+         "color": "#2c9c1c",
+         "nameShort": "M1",
+         "textColor": "#ffffff",
+         "vehicle": {
+          "name": {
+           "text": "Subway"
+          },
+          "type": "SUBWAY",
+          "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+         }
+        },
+        "stopCount": 13
+       },
+       "travelMode": "TRANSIT"
+      },
+      {
+       "distanceMeters": 40,
+       "staticDuration": "37s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 11,
+       "staticDuration": "9s",
+       "travelMode": "WALK"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "legs": [
+    {
+     "steps": [
+      {
+       "distanceMeters": 5,
+       "staticDuration": "4s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 61,
+       "staticDuration": "53s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 73,
+       "staticDuration": "76s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 75,
+       "staticDuration": "60s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 1339,
+       "staticDuration": "377s",
+       "transitDetails": {
+        "stopDetails": {
+         "arrivalStop": {
+          "name": "Omonia",
+          "location": {
+           "latLng": {
+            "latitude": 37.9840539,
+            "longitude": 23.7289046
+           }
+          }
+         },
+         "arrivalTime": "2026-10-09T07:09:49Z",
+         "departureStop": {
+          "name": "Syntagma",
+          "location": {
+           "latLng": {
+            "latitude": 37.974232799999996,
+            "longitude": 23.735544599999997
+           }
+          }
+         },
+         "departureTime": "2026-10-09T07:03:32Z"
+        },
+        "localizedValues": {
+         "arrivalTime": {
+          "time": {
+           "text": "10:09 AM"
+          },
+          "timeZone": "Europe/Athens"
+         },
+         "departureTime": {
+          "time": {
+           "text": "10:03 AM"
+          },
+          "timeZone": "Europe/Athens"
+         }
+        },
+        "headsign": "Μοσχατο - Καλλιθεα - Πλ. Αττικης",
+        "transitLine": {
+         "agencies": [
+          {
+           "name": "Athens Mass Transit System",
+           "phoneNumber": "+30 21 0820 0999",
+           "uri": "http://www.oasa.gr/"
+          }
+         ],
+         "name": "Πλ. Αττικης - Καλλιθεα - Μοσχατο",
+         "color": "#f19a1e",
+         "nameShort": "1",
+         "textColor": "#000000",
+         "vehicle": {
+          "name": {
+           "text": "Trolleybus"
+          },
+          "type": "TROLLEYBUS",
+          "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png"
+         }
+        },
+        "stopCount": 3
+       },
+       "travelMode": "TRANSIT"
+      },
+      {
+       "distanceMeters": 68,
+       "staticDuration": "68s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 14679,
+       "staticDuration": "1920s",
+       "transitDetails": {
+        "stopDetails": {
+         "arrivalStop": {
+          "name": "Kifissia",
+          "location": {
+           "latLng": {
+            "latitude": 38.073682,
+            "longitude": 23.808308
+           }
+          }
+         },
+         "arrivalTime": "2026-10-09T07:46:40Z",
+         "departureStop": {
+          "name": "Omonia",
+          "location": {
+           "latLng": {
+            "latitude": 37.984183,
+            "longitude": 23.728692
+           }
+          }
+         },
+         "departureTime": "2026-10-09T07:14:40Z"
+        },
+        "localizedValues": {
+         "arrivalTime": {
+          "time": {
+           "text": "10:46 AM"
+          },
+          "timeZone": "Europe/Athens"
+         },
+         "departureTime": {
+          "time": {
+           "text": "10:14 AM"
+          },
+          "timeZone": "Europe/Athens"
+         }
+        },
+        "headsign": "Kifissia",
+        "transitLine": {
+         "agencies": [
+          {
+           "name": "Urban Rail Transport S.A.",
+           "uri": "https://www.stasy.gr/"
+          }
+         ],
+         "name": "Γραμμη 1",
+         "color": "#2c9c1c",
+         "nameShort": "M1",
+         "textColor": "#ffffff",
+         "vehicle": {
+          "name": {
+           "text": "Subway"
+          },
+          "type": "SUBWAY",
+          "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+         }
+        },
+        "stopCount": 15
+       },
+       "travelMode": "TRANSIT"
+      },
+      {
+       "distanceMeters": 40,
+       "staticDuration": "37s",
+       "travelMode": "WALK"
+      },
+      {
+       "distanceMeters": 11,
+       "staticDuration": "9s",
+       "travelMode": "WALK"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

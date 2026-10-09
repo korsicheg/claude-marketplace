@@ -70,6 +70,34 @@
         "refactoring",
         "code-review"
       ]
+    },
+    {
+      "name": "athens-transit",
+      "source": "./plugins/athens-transit",
+      "description": "Athens public transport: live OASA bus and trolley times, metro/tram journeys from Google with bus legs made live, the best stop to walk to, when to leave, and leave-now alerts on Telegram that follow a live location. Each person keeps their own places and Google Maps key.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Alexandros Korsakov"
+      },
+      "repository": "https://github.com/korsicheg/claude-marketplace",
+      "license": "MIT",
+      "keywords": [
+        "athens",
+        "oasa",
+        "bus",
+        "trolley",
+        "metro",
+        "public-transport",
+        "google-maps",
+        "telegram"
+      ],
+      "category": "productivity",
+      "tags": [
+        "athens",
+        "transit",
+        "oasa",
+        "telegram"
+      ]
     }
   ]
 }

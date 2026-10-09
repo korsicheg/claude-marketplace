@@ -1,0 +1,9 @@
+{
+  "name": "athens-transit",
+  "version": "0.1.0",
+  "description": "Athens public transport in Claude Code: live bus and trolley times from OASA's telematics, metro/tram/suburban rail journeys from Google's Routes API with every bus leg made live, the best stop to walk to, when to leave, and background leave-now alerts on Telegram that follow a live location. Each person keeps their own places, plans and Google Maps key.",
+  "author": {
+    "name": "Alexandros Korsakov"
+  },
+  "keywords": ["athens", "oasa", "bus", "trolley", "metro", "public-transport", "telematics", "google-maps", "telegram"]
+}

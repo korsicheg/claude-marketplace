@@ -87,6 +87,26 @@ Ships five skills:
 > independently written restatement with citations. See
 > [`plugins/clean-code/NOTICE.md`](plugins/clean-code/NOTICE.md).
 
+### athens-transit
+
+Athens public transport: **live** bus and trolley times from OASA's telematics,
+metro, tram and suburban rail journeys from Google's Routes API (every bus leg made
+live), the best stop to walk to, when to leave, and background **leave-now alerts**
+on Telegram that follow a live location. Each person keeps their own saved places,
+plans and Google Maps key in their own project folder.
+
+Install, then add your own Google Maps key (see
+[`plugins/athens-transit/README.md`](plugins/athens-transit/README.md)):
+
+```
+/plugin install athens-transit@korsicheg-marketplace
+```
+
+Ships one skill:
+
+- **`athens-transit`** — "040 to Syntagma", "how do I get to the airport?": plans
+  with a standard-library Python tool (`oasa go`, `oasa watch`, `oasa places`).
+
 ## Layout
 
 ```
@@ -102,6 +122,13 @@ plugins/
 │       ├── clean-code-javascript/
 │       ├── clean-code-python/
 │       └── clean-code-universal/         # + references/declarative-translation.md
+├── athens-transit/
+│   ├── .claude-plugin/plugin.json        # plugin manifest
+│   ├── README.md                         # install + Google Maps key
+│   ├── check                             # tests + lint
+│   ├── tests/
+│   └── skills/
+│       └── athens-transit/               # SKILL.md + oasa (entry) + oasabus/ (the tool)
 └── persona-dialog-eval/
     ├── .claude-plugin/plugin.json        # plugin manifest
     └── skills/

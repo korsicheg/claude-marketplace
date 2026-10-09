@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Tests and lint for athens-transit (no other dependencies: the tool itself is standard-library Python).
+set -eu
+cd "$(dirname "$0")"
+uvx --with tzdata pytest -q tests
+uvx ruff check --line-length 120 skills tests
