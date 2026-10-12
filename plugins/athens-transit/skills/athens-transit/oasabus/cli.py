@@ -13,8 +13,9 @@
 
 WHERE and TO: "here" (the latest location shared on Telegram, the default for --from), a saved
 place, "lat,lon", or anything Google Maps can find. Exit codes: 2 no usable location (ask the
-person to share one), 3 no such place or line, or no ride, 4 a service didn't answer, 5 alerts
-can't be sent (no Telegram chat or tg command). Settings: see settings.py.
+person to share one), 3 no such place or line, or no ride, 4 a service didn't answer or there's
+no Google Maps key, 5 alerts can't be sent (no Telegram chat or tg command). Settings: see
+settings.py.
 """
 import argparse
 import json
@@ -102,7 +103,8 @@ class App:
         return "\n".join(f"{line.number}\t{line.name}" for line in found) or "no matching line"
 
 
-def places_command(args, saved: SavedPlaces, finder: PlaceFinder) -> str:
+def places_command(args, finder: PlaceFinder) -> str:
+    saved = finder.saved
     if args.action == "add":
         place = finder.find(args.where)
         saved.save(args.name, place)
@@ -147,7 +149,7 @@ def run(args) -> str | None:
     if args.command == "watch-run":
         return app.watch_run()
     if args.command == "places":
-        return places_command(args, app.places.saved, app.places)
+        return places_command(args, app.places)
     return app.lines(args.query)
 
 

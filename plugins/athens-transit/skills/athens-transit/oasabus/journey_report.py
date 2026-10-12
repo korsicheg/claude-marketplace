@@ -5,22 +5,25 @@ from datetime import datetime
 
 from .journeys import Option
 from .links import follow_live
-from .planner import athens_now
+from .planner import AT_STOP_M, athens_now
 from .transit import Ride, Walk
 
 ALSO_SHOWN = 2
 
 
+def minutes_until(moment: datetime, now: datetime) -> int:
+    return math.floor((moment - now).total_seconds() / 60)
+
+
 def leave_phrase(leave_at: datetime, now: datetime) -> str:
-    minutes = math.floor((leave_at - now).total_seconds() / 60)
-    return "leave now" if minutes <= 0 else f"leave by {leave_at:%H:%M}"
+    return "leave now" if minutes_until(leave_at, now) <= 0 else f"leave by {leave_at:%H:%M}"
 
 
 def telegram(options: list[Option], destination: str) -> str:
     now = athens_now()
     best = options[0]
     journey = best.journey
-    minutes = math.floor((journey.leave_at - now).total_seconds() / 60)
+    minutes = minutes_until(journey.leave_at, now)
     when = f" *(in {minutes} min)*" if minutes > 0 else ""
     icon = journey.rides[0].icon
     lines = [f"**{icon} {destination}: {leave_phrase(journey.leave_at, now)}**{when}", ""]
@@ -75,10 +78,10 @@ def voice(options: list[Option]) -> str:
     first = journey.rides[0]
     now = athens_now()
     leave = leave_phrase(journey.leave_at, now).capitalize()
-    minutes = math.floor((journey.leave_at - now).total_seconds() / 60)
+    minutes = minutes_until(journey.leave_at, now)
     if minutes > 0:
         leave += f", in {minutes} minutes"
-    walk = f"walk to {first.board} and " if journey.first_walk.meters > 60 else ""
+    walk = f"walk to {first.board} and " if journey.first_walk.meters > AT_STOP_M else ""
     timing = "" if first.live else ", by the timetable"
     changes = "".join(f", then change at {ride.board} to the {ride.line}" for ride in journey.rides[1:])
     return (f"{leave}: {walk}take the {first.line} towards {first.headsign} at {first.departs:%H:%M}{timing}"

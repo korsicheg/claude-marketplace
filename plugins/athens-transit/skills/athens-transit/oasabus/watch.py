@@ -2,7 +2,7 @@
 minute it checks the coming departures at the boarding stop (OASA's live predictions for buses
 and trolleys, the timetable otherwise), and where the person is when they share a live location. It
 keeps one Telegram status message up to date, sends "Leave now" when it's time to walk, and
-stops once the bus has left (telling him where to get off) or after a while.
+stops once the bus has left (telling them where to get off) or after a while.
 
 The plan to watch is saved by `oasa go`; `oasa watch` starts a watcher for it."""
 import json
@@ -21,14 +21,14 @@ from .geo import Point, estimated_walk_minutes
 from .journeys import Option
 from .live import LiveBuses
 from .location import SharedLocation
-from .planner import LEAVE_EARLY_MIN, Trip, athens_now
+from .planner import AT_STOP_M, LEAVE_EARLY_MIN, SAME_BUS_MIN, Trip, athens_now
 from .telematics import OasaUnavailable, Telematics
 from .trip_report import stop_name
 
 TICK_S = 30
-FAST_TICK_S = 15  # when it's nearly time to leave
+FAST_TICK_S = 15  # once the bus is SOON_MIN away
+SOON_MIN = 5
 WATCH_LIMIT_MIN = 75
-AT_STOP_M = 60
 BOARDED_M = 150  # still this near the stop when the bus leaves: on it
 LEAVING_MIN = 2  # a departure this close that then disappears has left
 STOP_WAIT_S = 5
@@ -97,7 +97,7 @@ class Watcher:
         self.status_id = None
         self.status_text = ""
         self.alerted = set()  # departures the person was told to leave for
-        self.target = None  # the departure he's heading for
+        self.target = None  # the departure they're heading for
 
     def run(self) -> None:
         signal.signal(signal.SIGTERM, self.stopped)
@@ -166,7 +166,7 @@ class Watcher:
         last_live = max((d.minutes for d in live), default=-1)
         scheduled = [Departure(at, (datetime.fromisoformat(at) - now).total_seconds() / 60, False)
                      for at in self.plan.scheduled]
-        later = [d for d in scheduled if d.minutes >= 0 and d.minutes > last_live + LEAVING_MIN]
+        later = [d for d in scheduled if d.minutes >= 0 and d.minutes > last_live + SAME_BUS_MIN]
         return sorted(live, key=lambda d: d.minutes) + later
 
     def left(self, target: Departure, departures: list[Departure]) -> bool:
@@ -188,7 +188,7 @@ class Watcher:
         sys.exit(0)
 
     def soon(self) -> bool:
-        return bool(self.target) and self.target.minutes <= 5
+        return bool(self.target) and self.target.minutes <= SOON_MIN
 
     def show(self, walk: float, leave_in: float | None, distance: float, live: bool) -> None:
         lines = [f"⏱️ **{self.plan.title}**"]

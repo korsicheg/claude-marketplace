@@ -10,13 +10,11 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field, replace
 from datetime import datetime, timedelta
 from itertools import pairwise
-from zoneinfo import ZoneInfo
 
 from .geo import Point
 from .maps import GoogleMaps, Place, Walk
-from .telematics import Bus, Route, Stop, Telematics
+from .telematics import ATHENS, Bus, Route, Stop, Telematics
 
-ATHENS = ZoneInfo("Europe/Athens")
 ROUTE_HOURS_RE = re.compile(r"\[(?P<start>\d\d:\d\d)-(?P<end>\d\d:\d\d)\]")
 LATIN_TO_GREEK = str.maketrans("ABEZHIKMNOPTYX", "ΑΒΕΖΗΙΚΜΝΟΡΤΥΧ")
 BOARDING_CANDIDATES = 3
@@ -25,6 +23,7 @@ TYPICAL_BUS_KMH = 15  # when today's timetable doesn't tell how long a trip take
 LEAVE_EARLY_MIN = 1  # be at the stop a minute before the bus
 AT_STOP_M = 60
 SCHEDULED_BUSES = 3
+SAME_BUS_MIN = 2  # a timetable bus this soon after the last live one is probably that bus
 
 
 class LineNotFound(Exception):
@@ -195,7 +194,8 @@ class LinePlanner:
         buses = [ComingBus(arrival.minutes, True, arrival.vehicle, stops_away(option, positions.get(arrival.vehicle)))
                  for arrival in sorted(live, key=lambda a: a.minutes)]
         last_live = buses[-1].minutes if buses else -1
-        later = [minutes for minutes in self.scheduled_minutes(option, run_minutes) if minutes > last_live + 2]
+        later = [minutes for minutes in self.scheduled_minutes(option, run_minutes)
+                 if minutes > last_live + SAME_BUS_MIN]
         return buses + [ComingBus(minutes, False) for minutes in later[:SCHEDULED_BUSES]]
 
     def scheduled_minutes(self, option: RideOption, run_minutes: float) -> list[float]:

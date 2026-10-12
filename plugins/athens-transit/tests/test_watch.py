@@ -1,10 +1,18 @@
 import time
+from datetime import timedelta
 
 import pytest
 from fakes import EAST, FakeTelematics, arrival
 from oasabus import watch
 from oasabus.location import SharedLocation
+from oasabus.planner import athens_now
+from oasabus.telematics import OasaUnavailable
 from oasabus.watch import Watcher, WatchPlan
+
+
+@pytest.fixture(autouse=True)
+def no_signals(monkeypatch):
+    monkeypatch.setattr(watch.signal, "signal", lambda *a: None)
 
 
 class FakeTelegram:
@@ -80,22 +88,12 @@ def test_a_live_location_far_away_means_missed_and_it_moves_to_the_next_bus():
 
 
 def test_timetable_departures_follow_the_live_ones():
-    from datetime import timedelta
-
-    from oasabus.planner import athens_now
     later = (athens_now() + timedelta(minutes=40)).isoformat()
     w, _ = watcher([arrival(20)], scheduled=[later])
     assert [d.live for d in w.departures()] == [True, False]
 
 
-@pytest.fixture(autouse=True)
-def no_signals(monkeypatch):
-    monkeypatch.setattr(watch.signal, "signal", lambda *a: None)
-
-
 def test_an_oasa_outage_is_not_a_departure():
-    from oasabus.telematics import OasaUnavailable
-
     w, oasa = watcher([arrival(13)])
     w.tick()
     oasa.arrivals_by_stop["E2"] = [arrival(1)]

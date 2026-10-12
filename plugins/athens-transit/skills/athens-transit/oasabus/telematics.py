@@ -138,7 +138,7 @@ class Telematics:
         return {outbound: sorted(pairs) for outbound, pairs in trips.items()}
 
     def static(self, act, **params):
-        """Data that changes rarely, kept on disk for a day."""
+        """Data that changes rarely, cached on disk for STATIC_DATA_TTL."""
         cached = self.cache_dir / ("_".join([act, *map(str, params.values())]) + ".json")
         try:
             if time.time() - cached.stat().st_mtime < STATIC_DATA_TTL:

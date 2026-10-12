@@ -21,7 +21,6 @@ class FakeTelematics:
         self.arrivals_by_stop = arrivals or {}
         self.bus_list = buses or []
         self.departures = departures or {True: [], False: []}
-        self.calls = []
 
     def lines(self):
         return [Line(100, "Α1", "WEST END - EAST END"), Line(200, "040", "SOMEWHERE ELSE")]
@@ -33,11 +32,10 @@ class FakeTelematics:
         return {1: EAST, 2: WEST, 3: EAST}[route_code]
 
     def arrivals(self, stop_code):
-        self.calls.append(("arrivals", stop_code))
         return self.arrivals_by_stop.get(stop_code, [])
 
     def buses(self, route_code):
-        return [bus for bus in self.bus_list]
+        return list(self.bus_list)
 
     def todays_departures(self, line_code):
         return self.departures
