@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Tests and lint for trip-cost (no other dependencies: the tool itself is standard-library Python).
+set -eu
+cd "$(dirname "$0")"
+uvx --python 3.10 pytest -q -p no:cacheprovider tests
+uvx ruff check --no-cache --target-version py310 --line-length 120 skills tests

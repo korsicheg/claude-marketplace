@@ -121,6 +121,27 @@ Ships one skill:
 - **`athens-transit`** — "040 to Syntagma", "how do I get to the airport?": plans
   with a standard-library Python tool (`oasa go`, `oasa watch`, `oasa places`).
 
+### trip-cost
+
+What a drive in **Greece** costs: motorway tolls from mydiodia.gr's stations and
+the operators' prices, fuel for your own car at real station prices (fuelprices.gr),
+where to fill up before you go and where to stop on the way, and the cheapest
+stations near any place. Each person keeps their own car profile and Google Maps
+key in their own project folder; saved places are shared with athens-transit.
+
+Install, then add a Google Maps key with the Routes API (see
+[`plugins/trip-cost/README.md`](plugins/trip-cost/README.md)):
+
+```
+/plugin install trip-cost@korsicheg-marketplace
+```
+
+Ships one skill:
+
+- **`trip-cost`** — "how much is Nafplio by car, there and back?", "where's the
+  cheapest diesel near home?": a standard-library Python tool (`trip plan`,
+  `trip stations`, `trip car`).
+
 ## Layout
 
 ```
@@ -132,9 +153,7 @@ plugins/
 │   ├── PLUGIN_CHANGELOG.md
 │   └── skills/
 │       ├── clean-code-java/              # SKILL.md + chapters/ + cheatsheet + glossary + patterns
-│       ├── clean-code-typescript/
-│       ├── clean-code-javascript/
-│       ├── clean-code-python/
+│       ├── clean-code-typescript/        # and -javascript, -python, -php, -csharp, -go, -ruby, -dart, -swift
 │       └── clean-code-universal/         # + references/declarative-translation.md
 ├── athens-transit/
 │   ├── .claude-plugin/plugin.json        # plugin manifest
@@ -143,6 +162,13 @@ plugins/
 │   ├── tests/
 │   └── skills/
 │       └── athens-transit/               # SKILL.md + oasa (entry) + oasabus/ (the tool)
+├── trip-cost/
+│   ├── .claude-plugin/plugin.json        # plugin manifest
+│   ├── README.md                         # install, Google Maps key, car profile
+│   ├── check                             # tests + lint
+│   ├── tests/
+│   └── skills/
+│       └── trip-cost/                    # SKILL.md + trip (entry) + tripcost/ (the tool)
 └── persona-dialog-eval/
     ├── .claude-plugin/plugin.json        # plugin manifest
     └── skills/

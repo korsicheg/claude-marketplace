@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+"""What a drive in Greece costs in tolls and fuel; see tripcost/cli.py. Run with python3 -I."""
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from tripcost.cli import main
+
+sys.exit(main())

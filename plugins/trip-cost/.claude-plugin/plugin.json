@@ -1,0 +1,9 @@
+{
+  "name": "trip-cost",
+  "version": "0.1.0",
+  "description": "What a drive in Greece costs in Claude Code: Greek motorway tolls from mydiodia.gr's stations and prices, fuel for your own car at real station prices, where to fill up and stop on the way, and the cheapest stations near any place. Each person keeps their own car profile and Google Maps key.",
+  "author": {
+    "name": "Alexandros Korsakov"
+  },
+  "keywords": ["greece", "tolls", "fuel", "road-trip", "driving", "google-maps"]
+}

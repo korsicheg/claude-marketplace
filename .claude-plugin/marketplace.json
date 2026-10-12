@@ -111,6 +111,32 @@
         "oasa",
         "alerts"
       ]
+    },
+    {
+      "name": "trip-cost",
+      "source": "./plugins/trip-cost",
+      "description": "What a drive in Greece costs: motorway tolls from mydiodia.gr, fuel for your own car at real station prices, where to fill up and stop on the way, and the cheapest stations near any place. Each person keeps their own car profile and Google Maps key.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Alexandros Korsakov"
+      },
+      "repository": "https://github.com/korsicheg/claude-marketplace",
+      "license": "MIT",
+      "keywords": [
+        "greece",
+        "tolls",
+        "fuel",
+        "road-trip",
+        "driving",
+        "google-maps"
+      ],
+      "category": "productivity",
+      "tags": [
+        "greece",
+        "tolls",
+        "fuel",
+        "driving"
+      ]
     }
   ]
 }
