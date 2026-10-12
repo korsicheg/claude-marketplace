@@ -4,7 +4,7 @@ Athens public transport for Claude Code. Ask "040 to Syntagma" or "how do I get 
 
 - **Buses and trolleys live**, from OASA's own predictions: which stop to walk to (up to three nearby stops are compared by when you'd arrive, not just the nearest), the next buses and how many stops away they are, when to leave, where to get off.
 - **Metro, tram and suburban rail**, from Google's Routes API (the timetable; no live metro data exists), with every bus or trolley leg of the journey switched to OASA's live time.
-- **Leave-now alerts** on Telegram, in the background without Claude: one status message counting down, a "🚶 Leave now" ping, a live location followed, a missed bus noticed, and where to get off once the bus has left.
+- **Leave-now alerts**: one status message counting down, a "🚶 Leave now" ping, a live location followed, a missed bus noticed, and where to get off once the bus has left. Claude passes them on in the session, or your own messaging command sends them in the background without Claude.
 - Links to Google Maps, OASA's tracker and a live map of the line.
 
 The tool is standard-library Python (3.10+), so there's nothing to install besides the plugin.
@@ -29,9 +29,20 @@ Then give it a **Google Maps key** (each person their own):
 
 Without a key, plans for a named bus line still work from coordinates and saved places, with estimated walks.
 
-## Telegram
+## Alerts and your location
 
-Answers are Markdown made for Telegram. Shared locations and leave-now alerts expect a Telegram bridge that gives Claude Code a `tg` command (`tg send`, `tg edit`, `--chat ID`), the person's chat in `TG_CHAT_ID`, and their latest shared location in `~/assistant/state/locations/<chat id>.json`. Every path can be changed with an environment variable; see `skills/athens-transit/oasabus/settings.py`.
+Out of the box, answers are Markdown and Claude passes the alerts on right in the session (`oasa watch --foreground`, followed with Claude Code's Monitor tool). You tell Claude where you are, or save places such as home and work.
+
+To get the alerts on your phone, or to plan from where your phone is, plug in your own messaging bridge with two optional environment variables, for example in your project's `.claude/settings.json`:
+
+```json
+{ "env": { "OASA_NOTIFY": "/path/to/notify", "OASA_LOCATION": "/path/to/location.json" } }
+```
+
+- `OASA_NOTIFY`: a command that sends a message with `COMMAND send TEXT`, printing the message's id, and edits it with `COMMAND edit ID TEXT`. With it, `oasa watch` runs in the background, without Claude.
+- `OASA_LOCATION`: a JSON file your bridge keeps up to date with your latest shared position, e.g. `{"latitude": 37.97, "longitude": 23.73, "updated": 1791493200, "live_until": 1791494100}` (unix times; `live_until` and `accuracy_m` are optional). With it, `here` is where you are, and the alerts follow a live location.
+
+The other settings are in `skills/athens-transit/oasabus/settings.py`.
 
 ## Your data
 

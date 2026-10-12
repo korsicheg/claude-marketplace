@@ -1,10 +1,12 @@
 """Leave-now alerts. After `oasa go`, a watcher runs in the background without Claude: every half
 minute it checks the coming departures at the boarding stop (OASA's live predictions for buses
 and trolleys, the timetable otherwise), and where the person is when they share a live location. It
-keeps one Telegram status message up to date, sends "Leave now" when it's time to walk, and
-stops once the bus has left (telling them where to get off) or after a while.
+keeps one status message up to date, sends "Leave now" when it's time to walk, and stops once the
+bus has left (telling them where to get off) or after a while.
 
-The plan to watch is saved by `oasa go`; `oasa watch` starts a watcher for it."""
+The plan to watch is saved by `oasa go`. `oasa watch` starts a watcher for it in the background,
+which sends its messages through the OASA_NOTIFY command (see settings.py); `oasa watch --foreground`
+runs one that prints them, for whoever runs it to pass on."""
 import json
 import math
 import os
@@ -16,6 +18,7 @@ from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Protocol
 
 from .geo import Point, estimated_walk_minutes
 from .journeys import Option
@@ -66,33 +69,49 @@ class Departure:
     live: bool
 
 
-class Telegram:
-    """The person's chat, through tg (see settings.py)."""
+class Notifier(Protocol):
+    def send(self, text: str) -> str:
+        """Send a message; its id, for edit."""
 
-    def __init__(self, tg: str, chat: str):
-        self.tg_command = tg
-        self.chat = chat
+    def edit(self, message_id: str, text: str) -> None: ...
+
+
+class CommandNotifier:
+    """Messages through the OASA_NOTIFY command, such as a messaging app's CLI (see settings.py)."""
+
+    def __init__(self, command: list[str]):
+        self.command = command
 
     def send(self, text: str) -> str:
-        return self.tg("send", text)
+        return self.run("send", text)
 
     def edit(self, message_id: str, text: str) -> None:
-        self.tg("edit", message_id, text)
+        self.run("edit", message_id, text)
 
-    def tg(self, *args: str) -> str:
-        done = subprocess.run([self.tg_command, "--chat", self.chat, *args], capture_output=True, text=True, timeout=60,
-                              check=False)
+    def run(self, *args: str) -> str:
+        done = subprocess.run([*self.command, *args], capture_output=True, text=True, timeout=60, check=False)
         if done.returncode:
-            raise RuntimeError(f"tg {args[0]} failed: {done.stderr.strip()}")
+            raise RuntimeError(f"{self.command[0]} {args[0]} failed: {done.stderr.strip()}")
         return done.stdout.strip()
 
 
+class PrintNotifier:
+    """Messages printed on stdout, each followed by a blank line; an edited one is printed again whole."""
+
+    def send(self, text: str) -> str:
+        print(text + "\n", flush=True)
+        return "printed"
+
+    def edit(self, message_id: str, text: str) -> None:
+        print(text + "\n", flush=True)
+
+
 class Watcher:
-    def __init__(self, plan: WatchPlan, oasa: Telematics, telegram: Telegram,
+    def __init__(self, plan: WatchPlan, oasa: Telematics, notifier: Notifier,
                  shared_location: Callable[[], SharedLocation | None]):
         self.plan = plan
         self.oasa = oasa
-        self.telegram = telegram
+        self.notifier = notifier
         self.shared_location = shared_location
         self.status_id = None
         self.status_text = ""
@@ -107,9 +126,9 @@ class Watcher:
                 if self.tick():
                     return
             except OasaUnavailable as e:
-                print(f"{athens_now():%H:%M:%S} skipped a look: {e}", flush=True)  # the next one may work
+                log(f"skipped a look: {e}")  # the next one may work
             except (RuntimeError, subprocess.SubprocessError) as e:
-                print(f"{athens_now():%H:%M:%S} telegram: {e}", flush=True)
+                log(f"couldn't send: {e}")
             time.sleep(FAST_TICK_S if self.soon() else TICK_S)
         self.finish(f"⏹️ Stopped watching after {WATCH_LIMIT_MIN} min.")
 
@@ -122,12 +141,12 @@ class Watcher:
         if self.target and self.left(self.target, departures):
             if self.boarded(distance, live):
                 return True
-            self.telegram.send(f"😕 Missed the {self.plan.title}. Looking at the next one.")
+            self.notifier.send(f"😕 Missed the {self.plan.title}. Looking at the next one.")
             self.target = None
         self.target = self.next_target(departures, walk)
         leave_in = self.target.minutes - walk - LEAVE_EARLY_MIN if self.target else None
         if self.target and leave_in <= 0 and distance > AT_STOP_M and self.target.key not in self.alerted:
-            self.telegram.send(f"🚶 **Leave now** for **{self.plan.stop_name}**: the {self.plan.title} comes in "
+            self.notifier.send(f"🚶 **Leave now** for **{self.plan.stop_name}**: the {self.plan.title} comes in "
                                f"{math.floor(self.target.minutes)} min, {math.ceil(walk)} min walk.")
             self.alerted.add(self.target.key)
         self.show(walk, leave_in, distance, live)
@@ -179,7 +198,7 @@ class Watcher:
         if live and distance > BOARDED_M:
             return False
         on_it = "✅ On board? " if live else f"🚌 Your {self.plan.title} has left {self.plan.stop_name}. "
-        self.telegram.send(on_it + self.plan.after_boarding)
+        self.notifier.send(on_it + self.plan.after_boarding)
         self.finish("✅ Done watching.")
         return True
 
@@ -211,15 +230,20 @@ class Watcher:
         if text == self.status_text:
             return
         if self.status_id:
-            self.telegram.edit(self.status_id, text)
+            self.notifier.edit(self.status_id, text)
         else:
-            self.status_id = self.telegram.send(text)
+            self.status_id = self.notifier.send(text)
         self.status_text = text
 
     def finish(self, note: str) -> None:
         if self.status_id:
             lines = self.status_text.splitlines()
-            self.telegram.edit(self.status_id, "\n".join(lines[:-1] + [f"*{note}*"]))
+            self.notifier.edit(self.status_id, "\n".join(lines[:-1] + [f"*{note}*"]))
+
+
+def log(text: str) -> None:
+    """Into the watcher's log (stderr), never among the messages a foreground watcher prints."""
+    print(f"{athens_now():%H:%M:%S} {text}", file=sys.stderr, flush=True)
 
 
 class WatchProcess:
@@ -236,13 +260,18 @@ class WatchProcess:
         except (OSError, ValueError):
             return None
 
-    def start(self, command: list[str], log: Path, env: dict) -> int:
+    def start(self, command: list[str], log_file: Path, env: dict) -> int:
         self.stop()
-        with open(log, "a") as out:
+        with open(log_file, "a") as out:
             process = subprocess.Popen(command, stdout=out, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
                                        env=env, start_new_session=True)
         self.pid_file.write_text(f"{process.pid}\n")
         return process.pid
+
+    def take_over(self) -> None:
+        """Make this process the watcher, in place of any running one."""
+        self.stop()
+        self.pid_file.write_text(f"{os.getpid()}\n")
 
     def stop(self) -> bool:
         pid = self.running()

@@ -1,5 +1,5 @@
-"""Journeys on any Athens transport, told for Telegram (Markdown), for Siri (one or two spoken
-sentences) or as JSON."""
+"""Journeys on any Athens transport, told in Markdown, in one or two sentences to be spoken,
+or as JSON."""
 import math
 from datetime import datetime
 
@@ -19,7 +19,7 @@ def leave_phrase(leave_at: datetime, now: datetime) -> str:
     return "leave now" if minutes_until(leave_at, now) <= 0 else f"leave by {leave_at:%H:%M}"
 
 
-def telegram(options: list[Option], destination: str) -> str:
+def markdown(options: list[Option], destination: str) -> str:
     now = athens_now()
     best = options[0]
     journey = best.journey

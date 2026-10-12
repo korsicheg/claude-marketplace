@@ -1,20 +1,21 @@
 """oasa: Athens public transport.
 
-    oasa go TO [--from WHERE] [--line LINE] [--format telegram|voice|json]
+    oasa go TO [--from WHERE] [--line LINE] [--format markdown|voice|json]
         How to get to TO now. With a bus or trolley LINE ("040", "A1", "11"): that line, with
         OASA's live times. Otherwise (or with a metro/tram line such as "M1"): Google's transit
         journeys, bus and trolley rides made live. Saves the plan for `oasa watch`.
-    oasa watch [--stop | --status]
-        Leave-now alerts for the last plan, in the background (see watch.py).
+    oasa watch [--foreground | --stop | --status]
+        Leave-now alerts for the last plan: in the background through OASA_NOTIFY, or with
+        --foreground printed as they come, until the watch ends (see watch.py).
     oasa places [add NAME WHERE | remove NAME]
         Saved places such as home and work.
     oasa lines QUERY
         OASA lines whose number or name matches.
 
-WHERE and TO: "here" (the latest location shared on Telegram, the default for --from), a saved
-place, "lat,lon", or anything Google Maps can find. Exit codes: 2 no usable location (ask the
-person to share one), 3 no such place or line, or no ride, 4 a service didn't answer or there's
-no Google Maps key, 5 alerts can't be sent (no Telegram chat or tg command). Settings: see
+WHERE and TO: "here" (the person's latest shared location, OASA_LOCATION; the default for --from),
+a saved place, "lat,lon", or anything Google Maps can find. Exit codes: 2 no usable location (ask
+where the person is), 3 no such place or line, or no ride, 4 a service didn't answer or there's no
+Google Maps key, 5 no alert command for a background watch (OASA_NOTIFY). Settings: see
 settings.py.
 """
 import argparse
@@ -33,7 +34,7 @@ from .planner import LineNotFound, LinePlanner, NoRide, line_key
 from .settings import Settings, load
 from .telematics import OasaUnavailable, Telematics
 from .transit import GoogleTransit
-from .watch import Telegram, Watcher, WatchPlan, WatchProcess, watch_journey, watch_trip
+from .watch import CommandNotifier, PrintNotifier, Watcher, WatchPlan, WatchProcess, watch_journey, watch_trip
 
 ENTRY = Path(__file__).resolve().parents[1] / "oasa"
 
@@ -55,7 +56,7 @@ class App:
         self.watcher = WatchProcess(settings.data / "watch.pid")
 
     def shared_location(self):
-        return latest(self.settings.locations, self.settings.telegram_chat)
+        return latest(self.settings.location)
 
     def go(self, to: str, start: str, line: str | None, output: str) -> str:
         origin, destination = self.places.find(start), self.places.find(to)
@@ -68,13 +69,13 @@ class App:
         if not options:
             raise NoRide(f"Google has no transit journey{f' with {line}' if line else ''} to {destination.name} now")
         watch_journey(options[0], destination.name, self.live).save(self.last_plan)
-        return {"telegram": lambda o: journey_report.telegram(o, destination.name), "voice": journey_report.voice,
+        return {"markdown": lambda o: journey_report.markdown(o, destination.name), "voice": journey_report.voice,
                 "json": lambda o: json.dumps(journey_report.as_json(o), ensure_ascii=False, indent=1)}[output](options)
 
     def go_by_bus(self, line: str, origin: Place, destination: Place, output: str) -> str:
         trip = LinePlanner(self.oasa, self.maps).plan(line, origin, destination)
         watch_trip(trip).save(self.last_plan)
-        return {"telegram": trip_report.telegram, "voice": trip_report.voice,
+        return {"markdown": trip_report.markdown, "voice": trip_report.voice,
                 "json": lambda t: json.dumps(trip_report.as_json(t), ensure_ascii=False, indent=1)}[output](trip)
 
     def is_oasa_line(self, line: str) -> bool:
@@ -84,18 +85,26 @@ class App:
             return False
 
     def watch(self) -> str:
-        if not self.last_plan.exists():
-            raise Usage("nothing to watch: run oasa go first", 3)
-        if not (self.settings.telegram_chat and self.settings.tg):
-            raise Usage("alerts need a Telegram chat (TG_CHAT_ID) and the tg command (OASA_TG)", 5)
-        plan = WatchPlan.load(self.last_plan)
+        plan = self.plan_to_watch()
+        if not self.settings.notify:
+            raise Usage("no alert command (OASA_NOTIFY) for a background watch: "
+                        "run oasa watch --foreground, which prints the alerts", 5)
         env = os.environ | {"OASA_WORKSPACE": str(self.settings.workspace)}
         pid = self.watcher.start([sys.executable, "-I", str(ENTRY), "watch-run"], self.settings.data / "watch.log", env)
-        return f"watching {plan.title} (pid {pid}); it posts its own status message"
+        return f"watching {plan.title} (pid {pid}); it sends its own status message"
 
     def watch_run(self) -> None:
-        telegram = Telegram(self.settings.tg, self.settings.telegram_chat)
-        Watcher(WatchPlan.load(self.last_plan), self.oasa, telegram, self.shared_location).run()
+        Watcher(self.plan_to_watch(), self.oasa, CommandNotifier(self.settings.notify), self.shared_location).run()
+
+    def watch_foreground(self) -> None:
+        plan = self.plan_to_watch()
+        self.watcher.take_over()
+        Watcher(plan, self.oasa, PrintNotifier(), self.shared_location).run()
+
+    def plan_to_watch(self) -> WatchPlan:
+        if not self.last_plan.exists():
+            raise Usage("nothing to watch: run oasa go first", 3)
+        return WatchPlan.load(self.last_plan)
 
     def lines(self, query: str) -> str:
         found = [line for line in self.oasa.lines()
@@ -121,8 +130,9 @@ def parser() -> argparse.ArgumentParser:
     go.add_argument("to")
     go.add_argument("--from", dest="start", default="here")
     go.add_argument("--line")
-    go.add_argument("--format", dest="output", choices=["telegram", "voice", "json"], default="telegram")
-    watch = sub.add_parser("watch")
+    go.add_argument("--format", dest="output", choices=["markdown", "voice", "json"], default="markdown")
+    watch = sub.add_parser("watch").add_mutually_exclusive_group()
+    watch.add_argument("--foreground", action="store_true")
     watch.add_argument("--stop", action="store_true")
     watch.add_argument("--status", action="store_true")
     sub.add_parser("watch-run")
@@ -145,6 +155,8 @@ def run(args) -> str | None:
         if args.status:
             pid = app.watcher.running()
             return f"watching (pid {pid})" if pid else "no watcher running"
+        if args.foreground:
+            return app.watch_foreground()
         return app.watch()
     if args.command == "watch-run":
         return app.watch_run()

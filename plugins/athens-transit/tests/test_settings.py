@@ -1,6 +1,7 @@
 import json
 
 from oasabus import settings
+from oasabus.location import latest
 
 
 def write_config(tmp_path, monkeypatch, servers):
@@ -28,7 +29,24 @@ def test_an_environment_key_wins_and_no_key_is_empty(tmp_path, monkeypatch):
 
 def test_each_person_keeps_their_data_in_their_own_folder(tmp_path, monkeypatch):
     monkeypatch.setenv("OASA_WORKSPACE", str(tmp_path / "ws"))
-    monkeypatch.setenv("TG_CHAT_ID", "42")
+    assert settings.load().data == tmp_path / "ws" / ".oasa"
+
+
+def test_a_plain_session_has_no_location_and_no_alert_command(monkeypatch):
+    monkeypatch.delenv("OASA_LOCATION", raising=False)
+    monkeypatch.delenv("OASA_NOTIFY", raising=False)
     loaded = settings.load()
-    assert loaded.data == tmp_path / "ws" / ".oasa"
-    assert loaded.telegram_chat == "42"
+    assert loaded.location is None and loaded.notify is None
+    assert latest(loaded.location) is None
+
+
+def test_a_setup_plugs_in_its_location_file_and_alert_command(tmp_path, monkeypatch):
+    shared = tmp_path / "where.json"
+    shared.write_text(json.dumps({"latitude": 37.97, "longitude": 23.73, "updated": 1000, "live_until": 1900}))
+    monkeypatch.setenv("OASA_LOCATION", str(shared))
+    monkeypatch.setenv("OASA_NOTIFY", "/opt/bridge/notify --to 'my phone'")
+    loaded = settings.load()
+    assert loaded.notify == ["/opt/bridge/notify", "--to", "my phone"]
+    location = latest(loaded.location)
+    assert (location.point.lat, location.point.lon, location.updated) == (37.97, 23.73, 1000)
+    assert location.is_live(1500) and not location.is_live(2000)

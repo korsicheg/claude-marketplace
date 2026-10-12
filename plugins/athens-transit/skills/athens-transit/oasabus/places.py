@@ -79,9 +79,9 @@ class PlaceFinder:
     def here(self) -> Place:
         shared = self.shared_location()
         if not shared:
-            raise LocationUnknown("no location shared on Telegram yet")
+            raise LocationUnknown("no shared location (OASA_LOCATION)")
         now = time.time()
         if not shared.is_live(now) and now - shared.updated > STALE_LOCATION_MIN * 60:
             minutes = round((now - shared.updated) / 60)
-            raise LocationUnknown(f"the last location shared on Telegram is {minutes} min old")
+            raise LocationUnknown(f"the last shared location is {minutes} min old")
         return Place("your location", shared.point, place_url(shared.point))

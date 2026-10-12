@@ -105,9 +105,9 @@ Ships eleven skills:
 
 Athens public transport: **live** bus and trolley times from OASA's telematics,
 metro, tram and suburban rail journeys from Google's Routes API (every bus leg made
-live), the best stop to walk to, when to leave, and background **leave-now alerts**
-on Telegram that follow a live location. Each person keeps their own saved places,
-plans and Google Maps key in their own project folder.
+live), the best stop to walk to, when to leave, and **leave-now alerts** that follow
+a live location, in the session or through your own messaging command. Each person
+keeps their own saved places, plans and Google Maps key in their own project folder.
 
 Install, then add your own Google Maps key (see
 [`plugins/athens-transit/README.md`](plugins/athens-transit/README.md)):

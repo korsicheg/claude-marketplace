@@ -1,5 +1,5 @@
-"""A ride on a named bus or trolley line, told for Telegram (Markdown), for Siri (one or two spoken
-sentences) or as JSON."""
+"""A ride on a named bus or trolley line, told in Markdown, in one or two sentences to be spoken,
+or as JSON."""
 import math
 
 from .links import follow_live
@@ -35,7 +35,7 @@ def headline(trip: Trip) -> str:
     return f"🚌 {route}: leave in {minutes(trip.leave_in)} min"
 
 
-def telegram(trip: Trip) -> str:
+def markdown(trip: Trip) -> str:
     option = trip.option
     lines = [f"**{headline(trip)}**", ""]
     walk = trip.walk_to_stop

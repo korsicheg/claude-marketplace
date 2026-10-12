@@ -87,8 +87,8 @@
     {
       "name": "athens-transit",
       "source": "./plugins/athens-transit",
-      "description": "Athens public transport: live OASA bus and trolley times, metro/tram journeys from Google with bus legs made live, the best stop to walk to, when to leave, and leave-now alerts on Telegram that follow a live location. Each person keeps their own places and Google Maps key.",
-      "version": "0.1.2",
+      "description": "Athens public transport: live OASA bus and trolley times, metro/tram journeys from Google with bus legs made live, the best stop to walk to, when to leave, and leave-now alerts that follow a live location, in the session or through your own messaging command. Each person keeps their own places and Google Maps key.",
+      "version": "0.2.0",
       "author": {
         "name": "Alexandros Korsakov"
       },
@@ -102,14 +102,14 @@
         "metro",
         "public-transport",
         "google-maps",
-        "telegram"
+        "alerts"
       ],
       "category": "productivity",
       "tags": [
         "athens",
         "transit",
         "oasa",
-        "telegram"
+        "alerts"
       ]
     }
   ]

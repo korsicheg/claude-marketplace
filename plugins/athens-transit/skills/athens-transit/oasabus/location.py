@@ -1,6 +1,6 @@
-"""Where the person is: the latest location they shared on Telegram. The Telegram front desk keeps
-it in <locations>/<chat id>.json (see settings.py) and, while a live location runs, updates it
-with every move: {"latitude", "longitude", "updated" (unix time), "live_until", "accuracy_m"}."""
+"""Where the person is: the latest position they shared from their phone, in the OASA_LOCATION file
+(see settings.py), which whatever receives it rewrites with every move while a live location runs:
+{"latitude", "longitude", "updated" (unix time), "live_until" (unix time, optional), "accuracy_m" (optional)}."""
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -19,11 +19,11 @@ class SharedLocation:
         return self.live_until is not None and now < self.live_until
 
 
-def latest(folder: Path, chat: str | None) -> SharedLocation | None:
-    if not chat:
+def latest(file: Path | None) -> SharedLocation | None:
+    if not file:
         return None
     try:
-        saved = json.loads((folder / f"{chat}.json").read_text())
+        saved = json.loads(file.read_text())
     except (OSError, ValueError):
         return None
     return SharedLocation(Point(saved["latitude"], saved["longitude"]), saved["updated"],

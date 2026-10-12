@@ -2,34 +2,32 @@
 plans and cache live in their own Claude Code project folder, under .oasa/, and Google Maps
 uses the key of their own Maps MCP server.
 
-Every setting can be given in the environment; the defaults fit a Claude Code session:
+Every setting can be given in the environment; the defaults fit a plain Claude Code session:
     OASA_WORKSPACE       the project folder (default: the folder the Claude Code session runs in)
     GOOGLE_MAPS_API_KEY  a key for Maps Grounding Lite and the Routes API (default: the key of the
                          project's MCP server at mapstools.googleapis.com, from ~/.claude.json)
-    TG_CHAT_ID           the person's Telegram chat, for leave-now alerts
-    OASA_LOCATIONS       a folder of <chat id>.json files with the person's latest shared location
-                         (default ~/assistant/state/locations, where the Telegram front desk keeps them)
-    OASA_TG              the command that sends Telegram messages (default: tg on the PATH, or
-                         ~/assistant/bin/tg)
+    OASA_LOCATION        a JSON file with the person's latest position, kept up to date by whatever
+                         gets it from their phone (see location.py); without it, "here" is unknown
+    OASA_NOTIFY          a command that delivers leave-now alerts in the background: called as
+                         `COMMAND send TEXT` (printing the message's id) and `COMMAND edit ID TEXT`;
+                         without it, `oasa watch --foreground` prints the alerts instead
 """
 import json
 import os
-import shutil
+import shlex
 from dataclasses import dataclass
 from pathlib import Path
 
 CLAUDE_JSON = Path.home() / ".claude.json"
 MAPS_ENDPOINT = "https://mapstools.googleapis.com/mcp"
-FRONT_DESK = Path.home() / "assistant"
 
 
 @dataclass(frozen=True)
 class Settings:
     workspace: Path
     maps_headers: dict  # what the Maps endpoint needs: the key, and any headers of the person's server
-    telegram_chat: str | None
-    locations: Path
-    tg: str | None
+    location: Path | None
+    notify: list[str] | None  # the alert command and its own arguments
 
     @property
     def data(self) -> Path:
@@ -45,9 +43,8 @@ def load() -> Settings:
     return Settings(
         workspace=workspace,
         maps_headers=maps_headers(workspace),
-        telegram_chat=os.environ.get("TG_CHAT_ID"),
-        locations=Path(os.environ.get("OASA_LOCATIONS") or FRONT_DESK / "state" / "locations"),
-        tg=os.environ.get("OASA_TG") or shutil.which("tg") or existing(FRONT_DESK / "bin" / "tg"))
+        location=Path(os.environ["OASA_LOCATION"]) if os.environ.get("OASA_LOCATION") else None,
+        notify=shlex.split(os.environ.get("OASA_NOTIFY", "")) or None)
 
 
 def session_folder() -> Path | None:
@@ -67,7 +64,3 @@ def maps_headers(workspace: Path) -> dict:
         return {}
     maps = [s for s in servers.values() if str(s.get("url", "")).startswith(MAPS_ENDPOINT)]
     return dict(maps[0].get("headers", {})) if maps else {}
-
-
-def existing(path: Path) -> str | None:
-    return str(path) if path.exists() else None
