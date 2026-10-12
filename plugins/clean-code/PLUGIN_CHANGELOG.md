@@ -9,6 +9,19 @@ or capability, **patch** = content fix or doc change with no new surface.
 
 Sources and licensing for the shipped content are recorded in [NOTICE.md](NOTICE.md).
 
+## [1.2.1] — 2026-10-12
+
+### Added
+
+- **README.md**: what each skill holds and which source it comes from, how Claude picks one
+  (the descriptions and the gateway), calling a skill by hand, the licensing in short, and how
+  to add a language. The marketplace README links to it.
+
+### Fixed
+
+- **Marketplace README:** `clean-code-universal` is cross-checked against the TypeScript,
+  JavaScript and Python adaptations; it said "all four", left over from when there were five skills.
+
 ## [1.2.0] — 2026-10-12
 
 ### Added

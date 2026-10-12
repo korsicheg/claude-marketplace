@@ -48,7 +48,8 @@ reference with worked examples, a cheatsheet, a glossary and a pattern catalogue
 and each description routes to the right sibling, so the model loads the one skill
 that fits the file it is editing rather than guessing between eleven.
 
-Install:
+Install (what each skill holds, how Claude picks one, and how to add a language are in
+[`plugins/clean-code/README.md`](plugins/clean-code/README.md)):
 
 ```
 /plugin install clean-code@korsicheg-marketplace
@@ -85,7 +86,8 @@ Ships eleven skills:
 - **`clean-code-swift`** — the MaatheusGois adaptation: protocols for SOLID,
   optionals and `guard`, value types, enums over strings.
 - **`clean-code-universal`** — the family's shared core, and the reason these ship
-  together. A language-agnostic distillation cross-checked against all four, built
+  together. A language-agnostic distillation of the book, cross-checked against the
+  TypeScript, JavaScript and Python adaptations, built
   on a **three-tier spine**: Tier 1 rules assume only that you can name something
   and run some verification; Tier 2 rules bind only where a construct exists (a
   parameter list, a type system, an exception, a test runner, a thread). It covers
@@ -149,6 +151,7 @@ Ships one skill:
 plugins/
 ├── clean-code/
 │   ├── .claude-plugin/plugin.json        # plugin manifest
+│   ├── README.md                         # the skills, routing, adding a language
 │   ├── NOTICE.md                         # per-skill sources and licences
 │   ├── PLUGIN_CHANGELOG.md
 │   └── skills/
