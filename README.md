@@ -41,11 +41,12 @@ Ships one skill:
 
 ### clean-code
 
-Robert C. Martin's **Clean Code** as five routing knowledge-base skills — one per
-language family, covering **any** language between them. Each is a chaptered
+Robert C. Martin's **Clean Code** as eleven routing knowledge-base skills — one per
+language with a solid community adaptation, plus a shared core that covers **any**
+other language. Each is a chaptered
 reference with worked examples, a cheatsheet, a glossary and a pattern catalogue,
 and each description routes to the right sibling, so the model loads the one skill
-that fits the file it is editing rather than guessing between five.
+that fits the file it is editing rather than guessing between eleven.
 
 Install:
 
@@ -53,7 +54,7 @@ Install:
 /plugin install clean-code@korsicheg-marketplace
 ```
 
-Ships five skills:
+Ships eleven skills:
 
 - **`clean-code-java`** — the original book (Java examples): naming, functions,
   comments, formatting, error handling, classes/SRP, unit tests/TDD, systems,
@@ -70,13 +71,26 @@ Ships five skills:
   the two-argument limit with dataclass/NamedTuple/TypedDict parameter objects,
   generators, SOLID through ABCs and mixins, mypy-enforced LSP, duck-typed
   dependency inversion.
+- **`clean-code-php`** — the piotrplenik adaptation: strict comparison, type
+  declarations, `final` classes behind interfaces, no fluent interfaces, SOLID.
+- **`clean-code-csharp`** — the thangchung adaptation for .NET: properties and
+  records, LINQ, constructor injection over singletons, `throw;`, async/await,
+  `.editorconfig`.
+- **`clean-code-go`** — Pungyeon's *Clean Go Code*: errors as values, returning
+  early, small interfaces, scope and mutability, nil and pointers, closures.
+- **`clean-code-ruby`** — the uohzxela adaptation: duck typing, keyword arguments,
+  blocks over loops, accessors, SOLID without interfaces.
+- **`clean-code-dart`** — the williambarreiro adaptation: named `required`
+  parameters, `final`/`const`, cascades, library privacy, error handling.
+- **`clean-code-swift`** — the MaatheusGois adaptation: protocols for SOLID,
+  optionals and `guard`, value types, enums over strings.
 - **`clean-code-universal`** — the family's shared core, and the reason these ship
   together. A language-agnostic distillation cross-checked against all four, built
   on a **three-tier spine**: Tier 1 rules assume only that you can name something
   and run some verification; Tier 2 rules bind only where a construct exists (a
   parameter list, a type system, an exception, a test runner, a thread). It covers
-  the languages with no dedicated sibling — Go, Rust, C#, C++, Kotlin, Ruby, PHP,
-  Swift, Scala — and the declarative ones the book never addresses: **YAML**
+  the languages with no dedicated sibling — Rust, C++, C, Kotlin, Scala and the
+  rest — and the declarative ones the book never addresses: **YAML**
   (Kubernetes, Helm, CI pipelines), **Terraform/HCL**, **SQL**, **Bash**,
   **Dockerfile**. Its translation table states, per rule, what it means where there
   are no functions, no classes and no unit tests — including the rules that

@@ -19,7 +19,13 @@ Announce it: "Using clean-code-<lang> to <purpose>."
 | `.js` `.mjs` `.cjs` `.jsx` | `clean-code:clean-code-javascript` |
 | `.py` | `clean-code:clean-code-python` |
 | `.java` | `clean-code:clean-code-java` |
-| Go, Rust, C#, C++, Kotlin, Ruby, PHP, Swift, Scala, **YAML, Terraform, SQL, Bash, Dockerfile** | `clean-code:clean-code-universal` |
+| `.php` | `clean-code:clean-code-php` |
+| `.cs` | `clean-code:clean-code-csharp` |
+| `.go` | `clean-code:clean-code-go` |
+| `.rb` `.rake` `Gemfile` | `clean-code:clean-code-ruby` |
+| `.dart` | `clean-code:clean-code-dart` |
+| `.swift` | `clean-code:clean-code-swift` |
+| Rust, C++, C, Kotlin, Scala and the rest, **YAML, Terraform, SQL, Bash, Dockerfile** | `clean-code:clean-code-universal` |
 
 Mixed-language change: load the one for the language carrying the logic.
 Reviewing for smells in any language: `clean-code-java` also holds the

@@ -1,6 +1,6 @@
 ---
 name: clean-code-java
-description: "Knowledge base from \"Clean Code: A Handbook of Agile Software Craftsmanship\" by Robert C. Martin et al. (Java examples). Use when writing or reviewing code and you need Uncle Bob's rules for naming, function size, comments (when NOT to write one), formatting, error handling, classes/SRP, unit tests/TDD, refactoring, and the smells-and-heuristics catalogue. Part of the clean-code skill family; for Python-specific idioms use clean-code-python, for TypeScript-specific idioms use clean-code-typescript, for JavaScript-specific idioms use clean-code-javascript instead. For any other language, including YAML, Terraform, SQL and Bash, use clean-code-universal."
+description: "Knowledge base from \"Clean Code: A Handbook of Agile Software Craftsmanship\" by Robert C. Martin et al. (Java examples). Use when writing or reviewing code and you need Uncle Bob's rules for naming, function size, comments (when NOT to write one), formatting, error handling, classes/SRP, unit tests/TDD, refactoring, and the smells-and-heuristics catalogue. Part of the clean-code skill family; for Python-specific idioms use clean-code-python, for TypeScript-specific idioms use clean-code-typescript, for JavaScript-specific idioms use clean-code-javascript instead. For PHP, C#, Go, Ruby, Dart or Swift use clean-code-php/-csharp/-go/-ruby/-dart/-swift; for any other language, including YAML, Terraform, SQL and Bash, use clean-code-universal."
 ---
 
 <!-- argument-hint: [topic, framework name, heuristic tag like G30, or chapter number] -->
@@ -158,13 +158,14 @@ Rule 4 never overrides 1–3. Don't merge well-named functions just to have fewe
   case studies (ch14–ch16), boundaries (ch08), systems (ch11), emergence (ch12), and the
   deep concurrency treatment (ch13, ch18). Reach for it for **rationale, thresholds, and
   the heuristic tags** even when writing TypeScript.
+- **The other language siblings** — `clean-code-php` (piotrplenik/clean-code-php), `clean-code-csharp` (thangchung/clean-code-dotnet), `clean-code-go` (Pungyeon's *Clean Go Code*), `clean-code-ruby` (uohzxela/clean-code-ruby), `clean-code-dart` (williambarreiro/clean-code-dart) and `clean-code-swift` (MaatheusGois/clean-code-swift): the same principles adapted for those languages, each in its own idiom. **Use the one matching the file in front of you.**
 - **`clean-code-universal`** — the family's shared core, distilled from this book across its
   Java, TypeScript, JavaScript and Python adaptations, with **every rule tagged by tier**:
   Tier 1 assumes only that you can name something and run some verification, Tier 2 binds
   only where a specific construct exists (a callable, a subtype, an exception, a test
   runner), and Tier 3 is language idiom, named there only so it can be routed back to the
-  sibling that owns it. **Use it for any language this family does not cover** — Go, Rust,
-  C#, C++, Kotlin, Ruby, PHP, Swift, Scala — **and for configuration and
+  sibling that owns it. **Use it for any language this family does not cover** — Rust,
+  C++, C, Kotlin, Scala and the rest — **and for configuration and
   infrastructure-as-code, which no sibling covers at all**: YAML (Kubernetes, Helm, CI
   pipelines), Terraform/HCL, SQL, Bash and Dockerfile.
 

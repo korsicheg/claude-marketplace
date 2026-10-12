@@ -1,13 +1,48 @@
 # clean-code plugin changelog
 
 Version history for the **plugin package** (`.claude-plugin/plugin.json` + the marketplace
-entry) and the five skills it ships.
+entry) and the skills it ships.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/); newest first. Semver on the
 plugin: **major** = removed/renamed skill or breaking routing change, **minor** = new skill
 or capability, **patch** = content fix or doc change with no new surface.
 
 Sources and licensing for the shipped content are recorded in [NOTICE.md](NOTICE.md).
+
+## [1.2.0] — 2026-10-12
+
+### Added
+
+- **Six language skills**, so these languages no longer fall through to `clean-code-universal`.
+  Each was made the way the TypeScript, JavaScript and Python skills were: a book-to-skill run on
+  the source repository, then shaped into the family layout (SKILL.md, chapters, cheatsheet,
+  glossary, patterns). Every one passes book-to-skill's scanner and validator.
+  - `clean-code-php`: piotrplenik/clean-code-php, 36 rules in 9 chapters. Strict comparison,
+    `final` classes behind interfaces, no fluent interfaces.
+  - `clean-code-csharp`: thangchung/clean-code-dotnet, 53 rules in 15 chapters. Properties,
+    records, LINQ, `throw;`, async guidance, `.editorconfig`.
+  - `clean-code-go`: Pungyeon's *Clean Go Code*, 16 rules in 10 chapters. Errors as values,
+    small interfaces, scope and mutability. The article's code samples are repaired to pass `gofmt`.
+  - `clean-code-ruby`: uohzxela/clean-code-ruby, 37 rules in 11 chapters. Duck typing, keyword
+    arguments, blocks.
+  - `clean-code-dart`: williambarreiro/clean-code-dart, 39 rules in 11 chapters. Named
+    `required` parameters, cascades, lowerCamelCase constants.
+  - `clean-code-swift`: MaatheusGois/clean-code-swift, 45 rules in 11 chapters. Protocols,
+    optionals, value types.
+  - Where a source is dated, carries JavaScript leftovers, or has examples that don't compile or
+    contradict its own rules, the skill says so (Source Caveats, Scope & Limits) instead of
+    repeating it.
+
+### Changed
+
+- **Routing:** the gateway's dispatch table sends `.php`, `.cs`, `.go`, `.rb`, `.dart` and
+  `.swift` to their skills. The five existing skills name the new siblings in their descriptions
+  and Related Skills. `clean-code-universal` now covers Rust, C++, C, Kotlin, Scala and the
+  declarative languages.
+- **Descriptions:** every skill description is now within the Agent Skills limit of 1,024
+  characters. The new routing sentence pushed four over it, so it was shortened.
+- **NOTICE.md:** lists the six sources with their MIT notices reproduced verbatim. The Go article
+  has no licence file, and its section says how the skill uses it.
 
 ## [1.1.0] — 2026-09-22
 

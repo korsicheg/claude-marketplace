@@ -1,6 +1,6 @@
 ---
 name: clean-code-typescript
-description: "Knowledge base from \"clean-code-typescript\" by labs42io — Robert C. Martin's Clean Code principles adapted for TypeScript. Use when writing or reviewing TypeScript and you need rules for naming, function arguments, SOLID worked in TS, type vs interface, readonly/Readonly/as const immutability, unions instead of instanceof, generators, enums, async/await and Promise.all, Error handling and Failable result types, ESLint/Prettier formatting, import organization, and when NOT to write a comment. Part of the clean-code skill family; for Python-specific idioms use clean-code-python, for JavaScript-specific idioms use clean-code-javascript, for the original book (Java examples, plus the smells catalogue and refactoring case studies) use clean-code-java. For any other language, including YAML, Terraform, SQL and Bash, use clean-code-universal."
+description: "Knowledge base from \"clean-code-typescript\" by labs42io — Robert C. Martin's Clean Code principles adapted for TypeScript. Use when writing or reviewing TypeScript and you need rules for naming, function arguments, SOLID worked in TS, type vs interface, readonly/Readonly/as const immutability, unions instead of instanceof, generators, enums, async/await and Promise.all, Error handling and Failable result types, ESLint/Prettier formatting, import organization, and when NOT to write a comment. Part of the clean-code skill family; for Python-specific idioms use clean-code-python, for JavaScript-specific idioms use clean-code-javascript, for the original book (Java examples, plus the smells catalogue and refactoring case studies) use clean-code-java. For PHP, C#, Go, Ruby, Dart or Swift use clean-code-php/-csharp/-go/-ruby/-dart/-swift; for any other language, including YAML, Terraform, SQL and Bash, use clean-code-universal."
 ---
 
 <!-- argument-hint: [topic, principle name like LSP, or chapter number] -->
@@ -239,12 +239,13 @@ concrete class.
   thresholds (**hardly ever 20 lines, 2–4 target, indent depth ≤ 2**, Command Query Separation).
 - **Use this skill when the code in front of you is TypeScript**; reach for `clean-code-java`
   for **rationale, thresholds, and heuristic tags** — they apply regardless of language.
+- **The other language siblings** — `clean-code-php` (piotrplenik/clean-code-php), `clean-code-csharp` (thangchung/clean-code-dotnet), `clean-code-go` (Pungyeon's *Clean Go Code*), `clean-code-ruby` (uohzxela/clean-code-ruby), `clean-code-dart` (williambarreiro/clean-code-dart) and `clean-code-swift` (MaatheusGois/clean-code-swift): the same principles adapted for those languages, each in its own idiom. **Use the one matching the file in front of you.**
 - **`clean-code-universal`** — the family's shared core, distilled from Martin's book across
   its Java, TypeScript, JavaScript and Python adaptations, with **every rule tagged by
   tier**: Tier 1 assumes only a name and some verification you can run, Tier 2 binds only
   where a specific construct exists, and Tier 3 — the TS idiom this skill owns, `as const`
   and the rest — is named there only so it can be routed back here. **Use it for any
-  language the family does not cover** — Go, Rust, C#, C++, Kotlin, Ruby, PHP, Swift, Scala
+  language the family does not cover** — Rust, C++, C, Kotlin, Scala and the rest
   — **and for configuration and infrastructure-as-code, which no sibling covers at all**:
   YAML (Kubernetes, Helm, CI pipelines), Terraform/HCL, SQL, Bash and Dockerfile.
 
