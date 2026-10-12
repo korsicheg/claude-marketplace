@@ -147,17 +147,17 @@ Ships one skill:
 ## Layout
 
 ```
-.claude-plugin/marketplace.json          # marketplace manifest (lists plugins)
+.claude-plugin/marketplace.json           # marketplace manifest (lists plugins)
 plugins/
 ├── clean-code/
 │   ├── .claude-plugin/plugin.json        # plugin manifest
 │   ├── README.md                         # the skills, routing, adding a language
 │   ├── NOTICE.md                         # per-skill sources and licences
 │   ├── PLUGIN_CHANGELOG.md
+│   ├── hooks/                            # SessionStart gateway: which skill when
 │   └── skills/
-│       ├── clean-code-java/              # SKILL.md + chapters/ + cheatsheet + glossary + patterns
-│       ├── clean-code-typescript/        # and -javascript, -python, -php, -csharp, -go, -ruby, -dart, -swift
-│       └── clean-code-universal/         # + references/declarative-translation.md
+│       ├── clean-code-<language>/        # SKILL.md + chapters/ + cheatsheet, glossary…
+│       └── clean-code-universal/         # any other language; + references/
 ├── athens-transit/
 │   ├── .claude-plugin/plugin.json        # plugin manifest
 │   ├── README.md                         # install + Google Maps key
@@ -177,6 +177,6 @@ plugins/
     └── skills/
         └── persona-dialog-eval/
             ├── SKILL.md                  # the skill
-            ├── lib/                       # reusable engine + runner + personas (copied verbatim into a project's eval/)
-            └── templates/eval/            # fill-in seams + CLIs (copied + adapted per project)
+            ├── lib/                      # engine + runner + personas, copied as-is
+            └── templates/eval/           # fill-in seams + CLIs, adapted per project
 ```
