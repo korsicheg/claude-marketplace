@@ -46,9 +46,9 @@ Each skill is a folder of Markdown that Claude reads as it needs it:
 ## How Claude picks one
 
 - **Descriptions**: each skill's description names its language and its siblings, and sends every other language to `clean-code-universal`, so Claude loads one skill rather than guessing between eleven.
-- **The gateway**: a SessionStart hook puts a short rule at the top of each session, and again after `/clear` or compaction: load the matching skill *before* writing or reviewing code, a file-extension dispatch table, and answers to the usual excuses for skipping it ("it's a one-line change"). It also says when not to bother: questions about the code, reading logs, writing docs, a config value with no logic in it. It costs about 2.5 kB of context and no extra model calls. The text is [`hooks/clean-code-gateway.md`](hooks/clean-code-gateway.md).
+- **The gateway**: a SessionStart hook puts a short rule at the top of each session, and again after `/clear` or compaction: load the matching skill *before* writing or reviewing code, a file-extension dispatch table, and answers to the usual excuses for skipping it ("it's a one-line change"). It also carries the comment rule itself, since it is the only text always in context: no comment unless it says why, one line each, and explanations for a reviewer go in the commit or PR description. It says when not to bother, too: questions about the code, reading logs, writing docs, a config value with no logic in it. It costs about 3.3 kB of context and no extra model calls. The text is [`hooks/clean-code-gateway.md`](hooks/clean-code-gateway.md).
 
-Your project's own conventions win: where your `CLAUDE.md` or you contradict a skill, Claude follows you and says which rule it set aside.
+Your project's own conventions win: where your `CLAUDE.md` or you contradict a skill, Claude follows you and says which rule it set aside. A convention has to be written down (a `CLAUDE.md`, a style guide, a lint config); how heavily the existing code is commented is not one.
 
 ## Using it
 

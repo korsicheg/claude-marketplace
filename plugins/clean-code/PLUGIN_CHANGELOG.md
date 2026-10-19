@@ -9,6 +9,21 @@ or capability, **patch** = content fix or doc change with no new surface.
 
 Sources and licensing for the shipped content are recorded in [NOTICE.md](NOTICE.md).
 
+## [1.2.2] — 2026-10-19
+
+### Changed
+
+- **Gateway: the comment rule is now in it**, not only in the skills. With a skill loaded
+  before writing, Claude still wrote a diff whose comments rivalled the code: the rule is one of
+  dozens in the skill, read once, while the gateway is the only text always in context. It now
+  says: no comment unless it says what the code cannot (why, a warning, an arbitrary-looking
+  number, a legal header, a TODO with a plan), one line each, and explanations for a reviewer go
+  in the commit or PR description.
+- **Gateway: a convention is written down.** "The project's own conventions win" read as
+  licence to match a heavily commented file. A convention is now a `CLAUDE.md`, a style guide
+  or a lint config, not the existing code's comment density. Two red flags name the excuses:
+  "this file is heavily commented, so I'll match it" and "the reviewer needs this explained".
+
 ## [1.2.1] — 2026-10-12
 
 ### Added
